@@ -1,12 +1,12 @@
 <html>
 	<head>
-		<script src = "js/jquery-2.1.1.min.js"></script>
+		<script src = "js/jquery/jquery-2.1.1.js"></script>
 		<script>
 			$(document).ready(function(){
 				$("button").click(function(){
-					$("#p1").toggle();
-					var str = $("#p1").css("display");
-					$("#p2").html(str);
+					// $("#p1").toggle();
+					// var str = $("#p1").css("display");
+					// $("#p2").html(str);
 					// $("canvas").drawArc({
 					// 	draggable: true,
 					// 	fillStyle: "red",
@@ -29,10 +29,11 @@
 	
 	<body>		
 		<script type="text/javascript">
-		function generateRandomUnicode() {
-			var c = String.fromCharCode(0x0041 + Math.random() * (0x005A-0x0041+1));
-			return c;
-		}
+			function generateRandomUnicode() {
+				var c = String.fromCharCode(0x0041 + Math.random() * (0x005A-0x0041+1));
+				// var obj_jCanvas = $.jCanvas();
+				return c;
+			}
 		</script>
 		<p id = "p1"> This is P1. </p>
 		<p id = "p2" style = "display:block"> Info. </p>
@@ -41,4 +42,4 @@
 		<canvas id = "testCanvas" width="300" height="300"></canvas> 
 	</body>
 </html>
-<script src = "js/jcanvas.min.js"></script>
+<script src = "js/jcanvas-master/jcanvas.min.js"></script>
