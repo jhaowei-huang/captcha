@@ -1,0 +1,44 @@
+<html>
+	<head>
+		<script src = "js/jquery-2.1.1.min.js"></script>
+		<script>
+			$(document).ready(function(){
+				$("button").click(function(){
+					$("#p1").toggle();
+					var str = $("#p1").css("display");
+					$("#p2").html(str);
+					// $("canvas").drawArc({
+					// 	draggable: true,
+					// 	fillStyle: "red",
+					// 	x: 150, y: 150,
+					// 	radius: 50,
+					// 	shadowColor: "green",
+					// 	shadowBlur: 100
+					// });
+					var randomChar = generateRandomUnicode();
+					$("canvas").drawText({
+						draggable: true,
+						x: 150, y: 150,
+						fillStyle: "black",
+						text: randomChar
+					});
+				});
+			});
+		</script>
+	</head>
+	
+	<body>		
+		<script type="text/javascript">
+		function generateRandomUnicode() {
+			var c = String.fromCharCode(0x0041 + Math.random() * (0x005A-0x0041+1));
+			return c;
+		}
+		</script>
+		<p id = "p1"> This is P1. </p>
+		<p id = "p2" style = "display:block"> Info. </p>
+		<button id = "btn1"> Show P1 </button>
+		<HR>
+		<canvas id = "testCanvas" width="300" height="300"></canvas> 
+	</body>
+</html>
+<script src = "js/jcanvas.min.js"></script>
