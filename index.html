@@ -7,21 +7,32 @@
 					// $("#p1").toggle();
 					// var str = $("#p1").css("display");
 					// $("#p2").html(str);
-					// $("canvas").drawArc({
-					// 	draggable: true,
-					// 	fillStyle: "red",
-					// 	x: 150, y: 150,
-					// 	radius: 50,
-					// 	shadowColor: "green",
-					// 	shadowBlur: 100
-					// });
-					var randomChar = generateRandomUnicode();
-					$("canvas").drawText({
-						draggable: true,
-						x: 150, y: 150,
-						fillStyle: "black",
-						text: randomChar
-					});
+					// var str = {
+					//   fillStyle: "#9cf",
+					//   strokeStyle: '#25a',
+					//   strokeWidth: 2,
+					//   x: newWord.x, y: newWord.y,
+					//   fontSize: 48,
+					//   fontFamily: 'Verdana, sans-serif',
+					//   text: newWord.text
+					// }
+
+					var str = {
+						fillStyle: randomColor(),
+					  // strokeStyle: '#25a',
+					  // strokeWidth: 2,
+					  	x: randomPos(), y: randomPos(),
+					  	fontSize: 24,
+					  	// fontFamily: 'Verdana, sans-serif',
+					  	text: randomChar()
+					}
+					$('canvas')
+						.drawText(str)
+						.drawArc({
+					  		fillStyle: '#000',
+					  		x: str.x, y: str.y,
+					  		radius:2
+						});
 				});
 			});
 		</script>
@@ -29,10 +40,19 @@
 	
 	<body>		
 		<script type="text/javascript">
-			function generateRandomUnicode() {
-				var c = String.fromCharCode(0x0041 + Math.random() * (0x005A-0x0041+1));
-				// var obj_jCanvas = $.jCanvas();
+			function randomChar() {
+				var c = String.fromCharCode(0x0041 + Math.random() * (0x005A - 0x0041 + 1));
 				return c;
+			}
+			function randomPos() {
+				// var nx = Math.floor(Math.random() * 300);
+				// var ny = Math.floor(Math.random() * 300);
+				// var loc = {nx, ny};
+				return Math.floor((Math.random() * 270) + 30);
+			}
+			function randomColor() {
+				var newColor = "#" + (0x1000000+(Math.random()) * 0xffffff).toString(16).substr(1,6);
+				return newColor;
 			}
 		</script>
 		<p id = "p1"> This is P1. </p>
