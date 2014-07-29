@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title> CV Test </title>
+		<script src = "jquery-2.1.1.js"></script>
+		<script src = "jcanvas.js"></script>
+		<script type="text/javascript">
+			function invert() {
+				$(this).setPixels({
+					x: 150, y: 150,
+					width: 300, height: 300,
+
+					// for (var xx = 0; xx <= 300; xx++) {
+					// 	for (var yy = 0; yy <= 300; yy++) {
+					// 		each
+					// 	}
+					// };
+					each: function(px) {
+						px.r = 255 - px.r;
+			        	px.g = 255 - px.g;
+			        	px.b = 255 - px.b;
+			        	px.a = 255;
+					}
+				});
+			}
+			$(document).ready(function(){
+				$("#intputCanvas").drawImage({
+				  	source: 'images/fish.jpg',
+				  	x: 150, y: 150,
+				  	width: 300, height: 300,
+				  	// Invert image color when image loads
+				  	// load: invert
+				});
+
+				$("#btn1").on("click", function() {
+					var c = $("#intputCanvas");
+					var ctx = c.getContext("2d");
+					var imgData = ctx.getImageData(300,300);
+					for (var i = 0 ; i < imgData.data.length ; i+=4) {
+						imgData.data[i+0]=255;
+					    imgData.data[i+1]=0;
+					    imgData.data[i+2]=0;
+					    imgData.data[i+3]=0;
+					}
+                    ctx.putImageData(imgData,300,300);
+					// var intputImgData = $("#intputCanvas").getCanvasImage();
+					
+					// var image = new Image();
+					// image.src = intputImgData;
+
+					// image.onload = function() {
+					// 	$("#outputCanvas").drawImage({
+					// 		source: image,
+					// 		x:150, y:150,
+					// 		width: 300, height: 300,
+					// 		load: invert
+					// 	});
+					// };
+				});
+			});
+		</script>
+	</head>
+
+	<body>
+		<script type="text/javascript">
+		
+		</script>
+		<label> Input </label> <canvas id = "intputCanvas" width = "300" height = "300" style="border:1px solid #000000;"> </canvas>
+		<button id = "btn1"> Go </button>
+		<label> Output </label> <canvas id = "outputCanvas" width = "300" height = "300" style="border:1px solid #000000;"> </canvas>
+	</body>
+</html>
