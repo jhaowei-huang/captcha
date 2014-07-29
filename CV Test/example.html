@@ -8,11 +8,11 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 
 <script>
   document.getElementById("scream").onload=function(){
-  var c=document.getElementById("myCanvas");
-  var ctx=c.getContext("2d");
+  // var c=document.getElementById("myCanvas");
+  // var ctx=c.getContext("2d");
   var img=document.getElementById("scream");
   ctx.drawImage(img,0,0);
-  var imgData=ctx.getImageData(0,0,c.width,c.height);
+  /*var imgData=ctx.getImageData(0,0,c.width,c.height);
   // invert colors
   for (var i=0;i<imgData.data.length;i+=4)
     {
@@ -21,7 +21,7 @@ Your browser does not support the HTML5 canvas tag.</canvas>
     imgData.data[i+2]=255-imgData.data[i+2]; // 每個pixel的B
     imgData.data[i+3]=255; // 每個pixel的Alpha
     }
-  ctx.putImageData(imgData,0,0);
+  ctx.putImageData(imgData,0,0);*/
 };
 </script>
 
