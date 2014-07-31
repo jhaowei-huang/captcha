@@ -1,0 +1,26 @@
+/* css style */
+
+table {
+	border-spacing: 10px;
+    border-collapse: separate;
+	border: 3px solid #000000; 
+}
+
+#intputCanvas, #outputCanvas {
+	width: 300px;
+	height: 300px;
+	border: 2px solid #000000;
+}
+
+button {
+   background: #ffffff;
+   color: #000000;
+   font-size: 11px;
+   vertical-align: middle;
+}
+button:hover {
+   background: rgba(8, 100, 180, 0.5);
+   /*color: #d6d6d6;*/
+}
+
+/*style=" height: 100px; background-color: rgb(255, 255, 255); width: 300px;" align="left" cellpadding="5" cellspacing="5" frame="border" rules="all"*/

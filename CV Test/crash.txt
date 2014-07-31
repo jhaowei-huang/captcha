@@ -1,0 +1,67 @@
+function effect(img, ef) {
+					canvas = document.createElement('canvas'); // create an in memory canvas
+	      			canvas.width = img.width; canvas.height = img.height; 
+	          		
+	          		context = canvas.getContext('2d');
+	          		context.drawImage(img, 0, 0 );  // draw on in memory canvas
+	          		imgData = context.getImageData(0, 0, img.width, img.height); // get imageData
+	          		
+					var x, y,
+						i,
+						val,
+						pix,
+						rate,
+						sum_r = sum_g = sum_b = new Array(20),
+						smx,
+						sq,
+						rr, gg, bb,
+						x1, y1, x2, y2,
+						xx, yy;
+
+					x1 = y1 = 0;
+					x2 = w - 1;
+					y2 = h - 1;
+
+					sq = (2 * ef + 1) * (2 * ef + 1);
+
+					for(y = y1; y <= y2; y++) {
+						x = x1;
+						for(xx = -ef; xx < ef; xx++) {
+							smx = xx + ef;
+							sum_r[smx] = sum_g[smx] = sum_b[smx] = 0;
+							for(yy = -ef; yy < ef; yy++) {
+								i = ((img.width * (y+yy)) + (x+xx)) * 4; // get (x+xx, y+yy) imgData
+								sum_r[smx] += imgData.data[i];
+								sum_g[smx] += imgData.data[i + 1];
+								sum_b[smx] += imgData.data[i + 2];
+							}
+						}
+						for(x = x1; x <= x2; x++) {
+							rr = gg = bb = 0;
+							smx = ef + ef;
+							sum_r[smx] = sum_g[smx] = sum_b[smx] = 0;
+							for(yy = -ef; yy <= ef; yy++) {
+								i = ((img.width * (y+yy)) + (x+ef)) * 4; // get (x+ef, y+yy) imgData
+								sum_r[smx] += imgData.data[i];
+								sum_g[smx] += imgData.data[i + 1];
+								sum_b[smx] += imgData.data[i + 2];
+							}
+						
+							for(xx = 0; xx <= smx; xx++) {
+								rr += sum_r[xx];
+								gg += sum_g[xx];
+								bb += sum_b[xx];
+								sum_r[smx] = sum_r[xx + 1];
+								sum_g[smx] = sum_g[xx + 1];
+								sum_b[smx] = sum_b[xx + 1];
+							}
+
+							i = ((img.width * y) + x) * 4;
+							imgData.data[i] = rr / sq;
+							imgData.data[i + 1] = gg / sq;
+							imgData.data[i + 2] = bb / sq;
+						}
+					}
+
+					return imgData;
+				}

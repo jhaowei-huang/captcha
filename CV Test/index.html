@@ -3,98 +3,126 @@
 <html>
 	<head>
 		<title> CV Test </title>
+		<link href="style.css" rel="stylesheet" type="text/css" />
 		<script src = "jquery-2.1.1.js"></script>
 		<script src = "jcanvas.js"></script>
+		<script type="text/javascript" src="pixastic.core.js"></script>
+		<script type="text/javascript" src="actions/desaturate.js"></script>
+		<script type="text/javascript" src="actions/edges.js"></script>
 		<script type="text/javascript">
-			function invert() {
-				$(this).setPixels({
-					x: 150, y: 150,
-					width: 300, height: 300,
-					each: function(px) {
-						px.r = 255 - px.r;
-			        	px.g = 255 - px.g;
-			        	px.b = 255 - px.b;
-			        	px.a = 255;
+				function edges(img) {
+					var img2 = Pixastic.process(img, "edges");
+					img2.onmouseout = function() {
+						Pixastic.revert(this);
 					}
-				});
-			}
+					document.getElementById("verygood").innerHTML = "Good job!";
+				}
+			</script>
+			<p>
+			<img src="images/input.gif" onmouseover="edges(this);" width = "300" height = "300"></img>
+			</p>
+		</script>
+
+		<script type="text/javascript">
 			$(document).ready(function(){
+				var c, ctx, 
+					img = new Image(), 
+					intputImgURL,
+					canvas,
+					context,
+					imgData;
+
+				var w = document.getElementById("intputCanvas").width,
+					h = document.getElementById("intputCanvas").height;
+
 				$("#intputCanvas").drawImage({
-				  	source: 'images/fish.jpg',
-				  	x: 150, y: 150,
-				  	width: 300, height: 300,
-				  	// Invert image color when image loads
-				  	// load: invert
+				  	source: 'images/input.gif',
+				  	x: w/2, y: h/2,
+				  	width: w, height: h
 				});
 
 				$("#btn1").on("click", function() {
-					var c = $("#outputCanvas")[0]; // to get DOM object. It equals to " document.getElementById("outputCanvas"); ".
-					var ctx = c.getContext("2d");
-
-          var intputImgURL = $("#intputCanvas").getCanvasImage(); // get input image as a DataURL.
-          var img = new Image();
-          img.src = intputImgURL; // convert DataURL to image object.
-
-          // ctx.drawImage(img, 0, 0); // draw on output canvas.
-
-          var canvas = document.createElement('canvas'); // create an in memory canvas
-          canvas.width = img.width; canvas.height = img.height; /* important!! but I dont know why the output is not complete without this.
-                                                                   I guess the canvas is create with a default width and height. The width 
-                                                                   and height are not fit to the image. */
-          
-          var context = canvas.getContext('2d');
-          // var img = document.getElementById('myimg'); // the image which imageData you want to get.
-          context.drawImage(img, 0, 0 );  // draw on in memory canvas
-          var imgData = context.getImageData(0, 0, img.width, img.height); // get imageData
-          // alert(canvas.width + " and " + canvas.height); // just for test
-          for(var i = 0; i < imgData.data.length; i += 4) { // do something
-            imgData.data[i] = 255 - imgData.data[i];
-            imgData.data[i + 1] = 255 - imgData.data[i + 1];
-            imgData.data[i + 2] = 255 - imgData.data[i + 2];
-            imgData.data[i + 3] = 255;
-          }
-
-          ctx.putImageData(imgData, 0,0);
-					// var intputImgURL = $("#intputCanvas").getCanvasImage();
-					// var img = new Image();
-					// img.src = intputImgURL;
-
-					// ctx.drawImage(imgData, 0, 0);
-
-					// for (var i = 0 ; i < imgData.data.length ; i+=4) {
-					// 	imgData.data[i+0]=255;
-					//     imgData.data[i+1]=0;
-					//     imgData.data[i+2]=0;
-					//     imgData.data[i+3]=0;
-					// }
-     //                ctx.putImageData(imgData,300,300);
-					// var intputImgData = $("#intputCanvas").getCanvasImage();
+					c = document.getElementById("outputCanvas"); 
+					// to get DOM object. It equals to " document.getElementById("outputCanvas"); ".
+					ctx = c.getContext("2d");
+					ctx.clearRect(0, 0, w, h);
 					
-					// var image = new Image();
-					// image.src = intputImgData;
+          			intputImgURL = $("#intputCanvas").getCanvasImage(); // get input image as a DataURL
+          			img.src = intputImgURL; // convert DataURL to image object
 
-					// image.onload = function() {
-					// 	$("#outputCanvas").drawImage({
-					// 		source: image,
-					// 		x:150, y:150,
-					// 		width: 300, height: 300,
-					// 		load: invert
-					// 	});
-					// };
+          			imgData = invert(img);
+          			// imgData = effect(img, 1);
+          			// ctx.drawImage(img, 0, 0); // draw on output canvas
+
+          			// canvas = document.createElement('canvas'); // create an in memory canvas
+          			// canvas.width = img.width; canvas.height = img.height; 
+          			// /* important!! but I dont know why the output is not complete without this.
+             //           I guess the canvas is create with a default width and height. The width 
+             //           and height are not fit to the image. */
+          
+          			// context = canvas.getContext('2d');
+          			// // var img = document.getElementById('myimg'); // the image which imageData you want to get.
+          			// context.drawImage(img, 0, 0 );  // draw on in memory canvas
+          			// imgData = context.getImageData(0, 0, img.width, img.height); // get imageData
+
+          			// for(i = 0; i < imgData.data.length; i += 4) { // invert the img
+            	// 		imgData.data[i] = 255 - imgData.data[i];
+			          //   imgData.data[i + 1] = 255 - imgData.data[i + 1];
+			          //   imgData.data[i + 2] = 255 - imgData.data[i + 2];
+			          //   imgData.data[i + 3] = 255;
+          			// }
+          			
+          			ctx.putImageData(imgData, 0,0); // draw on outputCanvas
 				});
+				
+				function invert(img) {
+					canvas = document.createElement('canvas'); // create an in memory canvas
+	      			canvas.width = img.width; canvas.height = img.height; 
+	          		
+	          		context = canvas.getContext('2d');
+	          		context.drawImage(img, 0, 0 );  // draw on in memory canvas
+	          		imgData = context.getImageData(0, 0, img.width, img.height); // get imageData
+	          		
+	          	// 	for(i = 0; i < imgData.data.length; i += 4) { // invert the img
+	        			// imgData.data[i] = 255 - imgData.data[i];
+			         //    imgData.data[i + 1] = 255 - imgData.data[i + 1];
+				        // imgData.data[i + 2] = 255 - imgData.data[i + 2];
+			         //    imgData.data[i + 3] = 255;
+	          	// 	}
+
+	          		var x, y, i;
+	          		for(y = 0; y < imgData.height; y++) {
+	          			for(x = 0; x < imgData.width; x++) {
+	          				i = ((img.width * y) + x) * 4;
+	          				imgData.data[i] = 255 - imgData.data[i];
+			            	imgData.data[i + 1] = 255 - imgData.data[i + 1];
+				        	imgData.data[i + 2] = 255 - imgData.data[i + 2];
+			            	imgData.data[i + 3] = 255;
+	          			}
+	          		}
+
+					return imgData;
+				}
+
+				
 			});
-		</script>
+		</script>	
+			
 	</head>
 
 	<body>
-		<table style=" height: 100px; background-color: rgb(255, 255, 255); width: 300px;" align="left" cellpadding="5" cellspacing="5" frame="border" rules="all">
+		<table >
    			<tbody>
      			<tr>
-       				<td> Input <BR> <canvas id = "intputCanvas" width = "300" height = "300" style="border:1px solid #000000;"></canvas> </td>
+       				<td id = "input"> Input <BR> <canvas id = "intputCanvas" width = "300" height = "300"></canvas> </td>
        				<td valign = "bottom" > <button id = "btn1"> Invert </button> </td>
-       				<td> Output <BR> <canvas id = "outputCanvas" width = "300" height = "300" style="border:1px solid #000000;"></canvas> </td>
+       				<td id = "output"> Output <BR> <canvas id = "outputCanvas" width = "300" height = "300"></canvas> </td>
      			</tr>
+     			<!-- <tr>
+     				<td><span id = "info"> info. </span>  <img src="images/fish.jpg" onmouseover="desaturate(this);"/></img> </td>
+     			</tr> -->
   		 	</tbody>
  		</table>
+
 	</body>
 </html>
