@@ -9,17 +9,17 @@
 		<script type="text/javascript" src="pixastic.core.js"></script>
 		<script type="text/javascript" src="actions/desaturate.js"></script>
 		<script type="text/javascript" src="actions/edges.js"></script>
+		<script type="text/javascript" src="actions/edges2.js"></script>
 		<script type="text/javascript">
 				function edges(img) {
 					var img2 = Pixastic.process(img, "edges");
 					img2.onmouseout = function() {
 						Pixastic.revert(this);
 					}
-					document.getElementById("verygood").innerHTML = "Good job!";
 				}
 			</script>
 			<p>
-			<img src="images/input.gif" onmouseover="edges(this);" width = "300" height = "300"></img>
+			<img src="images/color1.jpg" onmouseover="edges(this);" width = "300" height = "300"></img>
 			</p>
 		</script>
 
@@ -118,9 +118,6 @@
        				<td valign = "bottom" > <button id = "btn1"> Invert </button> </td>
        				<td id = "output"> Output <BR> <canvas id = "outputCanvas" width = "300" height = "300"></canvas> </td>
      			</tr>
-     			<!-- <tr>
-     				<td><span id = "info"> info. </span>  <img src="images/fish.jpg" onmouseover="desaturate(this);"/></img> </td>
-     			</tr> -->
   		 	</tbody>
  		</table>
 

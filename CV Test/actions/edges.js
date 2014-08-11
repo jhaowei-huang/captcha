@@ -7,19 +7,25 @@
 Pixastic.Actions.edges = {
 	process : function(params) {
 
-		var mono = !!(params.options.mono && params.options.mono != "false");
-		var invert = !!(params.options.invert && params.options.invert != "false");
-
+		var mono = true; // !!(params.options.mono && params.options.mono != "false");
+		var invert = true; // !!(params.options.invert && params.options.invert != "false");
+		var location = [];
 		if (Pixastic.Client.hasCanvasImageData()) {
 			var data = Pixastic.prepareData(params);
 			var dataCopy = Pixastic.prepareData(params, true)
 
 			var c = -1/8;
-			var kernel = [
-				[c, 	c, 	c],
-				[c, 	1, 	c],
-				[c, 	c, 	c]
+			var kernel_x = [
+				[1, 0, -1],
+				[2, 0, -2],
+				[1, 0, -1]
 			];
+			var kernel_y = [
+				[1, 2, 1],
+				[0, 0, 0],
+				[-1, -2, -1]
+			];
+
 
 			weight = 1/c;
 
@@ -41,50 +47,85 @@ Pixastic.Actions.edges = {
 				var x = w;
 				do {
 					var offset = offsetY + (x*4-4);
-
 					var offsetPrev = offsetYPrev + ((x == 1) ? 0 : x-2) * 4;
 					var offsetNext = offsetYNext + ((x == w) ? x-1 : x) * 4;
+
+					var rx = 
+						dataCopy[offsetPrev - 4] * 1 + 
+						dataCopy[offsetPrev]     * 0 + 
+						dataCopy[offsetPrev + 4] *-1 + 
+						dataCopy[offset - 4] * 2	+ 
+						dataCopy[offset +4] * -2	+ 
+						dataCopy[offsetNext-4] * 1	+ 
+						dataCopy[offsetNext] * 0	+ 
+						dataCopy[offsetNext+4] * -1	+ 
+						dataCopy[offset] * 0 ;
+
+					var ry = ((dataCopy[offsetPrev-4] * 1
+						+ dataCopy[offsetPrev] * 2
+						+ dataCopy[offsetPrev+4] * 1
+						+ dataCopy[offset-4] * 0
+						+ dataCopy[offset+4] * 0
+						+ dataCopy[offsetNext-4] * -1
+						+ dataCopy[offsetNext] * -2
+						+ dataCopy[offsetNext+4] * -1)
+						+ dataCopy[offset] * 0) ;
 	
-					var r = ((dataCopy[offsetPrev-4]
-						+ dataCopy[offsetPrev]
-						+ dataCopy[offsetPrev+4]
-						+ dataCopy[offset-4]
-						+ dataCopy[offset+4]
-						+ dataCopy[offsetNext-4]
-						+ dataCopy[offsetNext]
-						+ dataCopy[offsetNext+4]) * c
-						+ dataCopy[offset]
-						) 
-						* weight;
+					var gx = ((dataCopy[offsetPrev-3] * 1
+						+ dataCopy[offsetPrev+1] * 0
+						+ dataCopy[offsetPrev+5] * -1
+						+ dataCopy[offset-3] * 2
+						+ dataCopy[offset+5] * -2
+						+ dataCopy[offsetNext-3] * 1
+						+ dataCopy[offsetNext+1] * 0
+						+ dataCopy[offsetNext+5] * -1)
+						+ dataCopy[offset+1] * 0);
+
+					var gy = ((dataCopy[offsetPrev-3] * 1
+						+ dataCopy[offsetPrev+1] * 2
+						+ dataCopy[offsetPrev+5] * 1
+						+ dataCopy[offset-3] * 0
+						+ dataCopy[offset+5] * 0
+						+ dataCopy[offsetNext-3] * -1
+						+ dataCopy[offsetNext+1] * -2
+						+ dataCopy[offsetNext+5] * -1)
+						+ dataCopy[offset+1] * 0);
 	
-					var g = ((dataCopy[offsetPrev-3]
-						+ dataCopy[offsetPrev+1]
-						+ dataCopy[offsetPrev+5]
-						+ dataCopy[offset-3]
-						+ dataCopy[offset+5]
-						+ dataCopy[offsetNext-3]
-						+ dataCopy[offsetNext+1]
-						+ dataCopy[offsetNext+5]) * c
-						+ dataCopy[offset+1])
-						* weight;
-	
-					var b = ((dataCopy[offsetPrev-2]
-						+ dataCopy[offsetPrev+2]
-						+ dataCopy[offsetPrev+6]
-						+ dataCopy[offset-2]
-						+ dataCopy[offset+6]
-						+ dataCopy[offsetNext-2]
-						+ dataCopy[offsetNext+2]
-						+ dataCopy[offsetNext+6]) * c
-						+ dataCopy[offset+2])
-						* weight;
+					var bx = ((dataCopy[offsetPrev-2] * 1
+						+ dataCopy[offsetPrev+2] * 0
+						+ dataCopy[offsetPrev+6] * -1
+						+ dataCopy[offset-2] * 2
+						+ dataCopy[offset+6] * -2
+						+ dataCopy[offsetNext-2] * 1
+						+ dataCopy[offsetNext+2] * 0
+						+ dataCopy[offsetNext+6] * -1)
+						+ dataCopy[offset+2] * 0);
+
+					var	by = (dataCopy[offsetPrev-2] * 1
+						+ dataCopy[offsetPrev+2] * 2
+						+ dataCopy[offsetPrev+6] * 1
+						+ dataCopy[offset-2] * 0
+						+ dataCopy[offset+6] * 0
+						+ dataCopy[offsetNext-2] * -1
+						+ dataCopy[offsetNext+2] * -2
+						+ dataCopy[offsetNext+6] * -1
+						+ dataCopy[offset+2] * 0);
+
+					var r = Math.sqrt((rx*rx + ry*ry) / 8.0);
+					var g = Math.sqrt((gx*gx + gy*gy) / 8.0);
+					var b = Math.sqrt((bx*bx + by*by) / 8.0);
 
 					if (mono) {
-						var brightness = (r*0.3 + g*0.59 + b*0.11)||0;
+						var brightness = (r*0.3 + g*0.59 + b*0.11) || 0;
 						if (invert) brightness = 255 - brightness;
 						if (brightness < 0 ) brightness = 0;
 						if (brightness > 255 ) brightness = 255;
 						r = g = b = brightness;
+						
+						if(brightness == 255) {
+							var loc = {x: x, y: y};
+							location.push(loc);
+						}
 					} else {
 						if (invert) {
 							r = 255 - r;
@@ -102,9 +143,10 @@ Pixastic.Actions.edges = {
 					data[offset] = r;
 					data[offset+1] = g;
 					data[offset+2] = b;
-
 				} while (--x);
+
 			} while (--y);
+
 
 			return true;
 		}
