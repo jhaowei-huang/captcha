@@ -1,0 +1,59 @@
+var rx = dataCopy[prev - 4] * kernel_x[0][0] + 
+							 dataCopy[prev]     * kernel_x[0][1] + 
+							 dataCopy[prev + 4] * kernel_x[0][2] + 
+							 dataCopy[curr - 4] * kernel_x[1][0] + 
+							 dataCopy[curr]     * kernel_x[1][1] +
+							 dataCopy[curr + 4] * kernel_x[1][2] + 
+							 dataCopy[next - 4] * kernel_x[2][0] + 
+							 dataCopy[next]     * kernel_x[2][1] + 
+							 dataCopy[next + 4] * kernel_x[2][2];
+
+					var ry = dataCopy[prev - 4] * kernel_y[0][0] + 
+							 dataCopy[prev]     * kernel_y[0][1] + 
+							 dataCopy[prev + 4] * kernel_y[0][2] + 
+							 dataCopy[curr - 4] * kernel_y[1][0] + 
+							 dataCopy[curr]     * kernel_y[1][1] +
+							 dataCopy[curr + 4] * kernel_y[1][2] + 
+							 dataCopy[next - 4] * kernel_y[2][0] + 
+							 dataCopy[next]     * kernel_y[2][1] + 
+							 dataCopy[next + 4] * kernel_y[2][2];
+	
+					var gx = dataCopy[prev - 3] * kernel_x[0][0] + 
+							 dataCopy[prev + 1] * kernel_x[0][1] + 
+							 dataCopy[prev + 5] * kernel_x[0][2] + 
+							 dataCopy[curr - 3] * kernel_x[1][0] + 
+							 dataCopy[curr + 1] * kernel_x[1][1] +
+							 dataCopy[curr + 3] * kernel_x[1][2] + 
+							 dataCopy[next - 3] * kernel_x[2][0] + 
+							 dataCopy[next + 1] * kernel_x[2][1] + 
+							 dataCopy[next + 5] * kernel_x[2][2];
+
+					var gy = dataCopy[prev - 3] * kernel_y[0][0] + 
+							 dataCopy[prev + 1] * kernel_y[0][1] + 
+							 dataCopy[prev + 5] * kernel_y[0][2] + 
+							 dataCopy[curr - 3] * kernel_y[1][0] + 
+							 dataCopy[curr + 1] * kernel_y[1][1] +
+							 dataCopy[curr + 3] * kernel_y[1][2] + 
+							 dataCopy[next - 3] * kernel_y[2][0] + 
+							 dataCopy[next + 1] * kernel_y[2][1] + 
+							 dataCopy[next + 5] * kernel_y[2][2];
+	
+					var bx = dataCopy[prev - 2] * kernel_x[0][0] + 
+							 dataCopy[prev + 2] * kernel_x[0][1] + 
+							 dataCopy[prev + 6] * kernel_x[0][2] + 
+							 dataCopy[curr - 2] * kernel_x[1][0] + 
+							 dataCopy[curr + 2] * kernel_x[1][1] +
+							 dataCopy[curr + 6] * kernel_x[1][2] + 
+							 dataCopy[next - 2] * kernel_x[2][0] + 
+							 dataCopy[next + 2] * kernel_x[2][1] + 
+							 dataCopy[next + 6] * kernel_x[2][2];
+
+					var	by = dataCopy[prev - 2] * kernel_y[0][0] + 
+							 dataCopy[prev + 2] * kernel_y[0][1] + 
+							 dataCopy[prev + 6] * kernel_y[0][2] + 
+							 dataCopy[curr - 2] * kernel_y[1][0] + 
+							 dataCopy[curr + 2] * kernel_y[1][1] +
+							 dataCopy[curr + 6] * kernel_y[1][2] + 
+							 dataCopy[next - 2] * kernel_y[2][0] + 
+							 dataCopy[next + 2] * kernel_y[2][1] + 
+							 dataCopy[next + 6] * kernel_y[2][2];
