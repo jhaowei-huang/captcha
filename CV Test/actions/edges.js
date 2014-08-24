@@ -6,13 +6,12 @@
 
 Pixastic.Actions.edges = {
 	process : function(params) {
-
 		var mono = true; // !!(params.options.mono && params.options.mono != "false");
 		var invert = true; // !!(params.options.invert && params.options.invert != "false");
 		var location = [];
 		if (Pixastic.Client.hasCanvasImageData()) {
-			var data = Pixastic.prepareData(params);
-			var dataCopy = Pixastic.prepareData(params, true)
+			var data = Pixastic.prepareData(params, false);
+			var dataCopy = Pixastic.prepareData(params, true);
 
 			var c = -1/8;
 			var kernel_x = [
@@ -25,7 +24,6 @@ Pixastic.Actions.edges = {
 				[0, 0, 0],
 				[-1, -2, -1]
 			];
-
 
 			weight = 1/c;
 
@@ -46,70 +44,69 @@ Pixastic.Actions.edges = {
 
 				var x = w;
 				do {
-					var offset = offsetY + (x*4-4);
-					var offsetPrev = offsetYPrev + ((x == 1) ? 0 : x-2) * 4;
-					var offsetNext = offsetYNext + ((x == w) ? x-1 : x) * 4;
+					var curr = offsetY + (x*4-4);
+					var prev = offsetYPrev + ((x == 1) ? 0 : x-2) * 4;
+					var next = offsetYNext + ((x == w) ? x-1 : x) * 4;
 
-					var rx = 
-						dataCopy[offsetPrev - 4] * 1 + 
-						dataCopy[offsetPrev]     * 0 + 
-						dataCopy[offsetPrev + 4] *-1 + 
-						dataCopy[offset - 4] * 2	+ 
-						dataCopy[offset +4] * -2	+ 
-						dataCopy[offsetNext-4] * 1	+ 
-						dataCopy[offsetNext] * 0	+ 
-						dataCopy[offsetNext+4] * -1	+ 
-						dataCopy[offset] * 0 ;
+					var rx = dataCopy[prev - 4] * kernel_x[0][0] + 
+							 dataCopy[prev]     * kernel_x[0][1] + 
+							 dataCopy[prev + 4] * kernel_x[0][2] + 
+							 dataCopy[curr - 4] * kernel_x[1][0] + 
+							 dataCopy[curr]     * kernel_x[1][1] +
+							 dataCopy[curr + 4] * kernel_x[1][2] + 
+							 dataCopy[next - 4] * kernel_x[2][0] + 
+							 dataCopy[next]     * kernel_x[2][1] + 
+							 dataCopy[next + 4] * kernel_x[2][2];
 
-					var ry = ((dataCopy[offsetPrev-4] * 1
-						+ dataCopy[offsetPrev] * 2
-						+ dataCopy[offsetPrev+4] * 1
-						+ dataCopy[offset-4] * 0
-						+ dataCopy[offset+4] * 0
-						+ dataCopy[offsetNext-4] * -1
-						+ dataCopy[offsetNext] * -2
-						+ dataCopy[offsetNext+4] * -1)
-						+ dataCopy[offset] * 0) ;
+					var ry = dataCopy[prev - 4] * kernel_y[0][0] + 
+							 dataCopy[prev]     * kernel_y[0][1] + 
+							 dataCopy[prev + 4] * kernel_y[0][2] + 
+							 dataCopy[curr - 4] * kernel_y[1][0] + 
+							 dataCopy[curr]     * kernel_y[1][1] +
+							 dataCopy[curr + 4] * kernel_y[1][2] + 
+							 dataCopy[next - 4] * kernel_y[2][0] + 
+							 dataCopy[next]     * kernel_y[2][1] + 
+							 dataCopy[next + 4] * kernel_y[2][2];
 	
-					var gx = ((dataCopy[offsetPrev-3] * 1
-						+ dataCopy[offsetPrev+1] * 0
-						+ dataCopy[offsetPrev+5] * -1
-						+ dataCopy[offset-3] * 2
-						+ dataCopy[offset+5] * -2
-						+ dataCopy[offsetNext-3] * 1
-						+ dataCopy[offsetNext+1] * 0
-						+ dataCopy[offsetNext+5] * -1)
-						+ dataCopy[offset+1] * 0);
+					var gx = dataCopy[prev - 3] * kernel_x[0][0] + 
+							 dataCopy[prev + 1] * kernel_x[0][1] + 
+							 dataCopy[prev + 5] * kernel_x[0][2] + 
+							 dataCopy[curr - 3] * kernel_x[1][0] + 
+							 dataCopy[curr + 1] * kernel_x[1][1] +
+							 dataCopy[curr + 5] * kernel_x[1][2] + 
+							 dataCopy[next - 3] * kernel_x[2][0] + 
+							 dataCopy[next + 1] * kernel_x[2][1] + 
+							 dataCopy[next + 5] * kernel_x[2][2];
 
-					var gy = ((dataCopy[offsetPrev-3] * 1
-						+ dataCopy[offsetPrev+1] * 2
-						+ dataCopy[offsetPrev+5] * 1
-						+ dataCopy[offset-3] * 0
-						+ dataCopy[offset+5] * 0
-						+ dataCopy[offsetNext-3] * -1
-						+ dataCopy[offsetNext+1] * -2
-						+ dataCopy[offsetNext+5] * -1)
-						+ dataCopy[offset+1] * 0);
+					var gy = dataCopy[prev - 3] * kernel_y[0][0] + 
+							 dataCopy[prev + 1] * kernel_y[0][1] + 
+							 dataCopy[prev + 5] * kernel_y[0][2] + 
+							 dataCopy[curr - 3] * kernel_y[1][0] + 
+							 dataCopy[curr + 1] * kernel_y[1][1] +
+							 dataCopy[curr + 5] * kernel_y[1][2] + 
+							 dataCopy[next - 3] * kernel_y[2][0] + 
+							 dataCopy[next + 1] * kernel_y[2][1] + 
+							 dataCopy[next + 5] * kernel_y[2][2];
 	
-					var bx = ((dataCopy[offsetPrev-2] * 1
-						+ dataCopy[offsetPrev+2] * 0
-						+ dataCopy[offsetPrev+6] * -1
-						+ dataCopy[offset-2] * 2
-						+ dataCopy[offset+6] * -2
-						+ dataCopy[offsetNext-2] * 1
-						+ dataCopy[offsetNext+2] * 0
-						+ dataCopy[offsetNext+6] * -1)
-						+ dataCopy[offset+2] * 0);
+					var bx = dataCopy[prev - 2] * kernel_x[0][0] + 
+							 dataCopy[prev + 2] * kernel_x[0][1] + 
+							 dataCopy[prev + 6] * kernel_x[0][2] + 
+							 dataCopy[curr - 2] * kernel_x[1][0] + 
+							 dataCopy[curr + 2] * kernel_x[1][1] +
+							 dataCopy[curr + 6] * kernel_x[1][2] + 
+							 dataCopy[next - 2] * kernel_x[2][0] + 
+							 dataCopy[next + 2] * kernel_x[2][1] + 
+							 dataCopy[next + 6] * kernel_x[2][2];
 
-					var	by = (dataCopy[offsetPrev-2] * 1
-						+ dataCopy[offsetPrev+2] * 2
-						+ dataCopy[offsetPrev+6] * 1
-						+ dataCopy[offset-2] * 0
-						+ dataCopy[offset+6] * 0
-						+ dataCopy[offsetNext-2] * -1
-						+ dataCopy[offsetNext+2] * -2
-						+ dataCopy[offsetNext+6] * -1
-						+ dataCopy[offset+2] * 0);
+					var	by = dataCopy[prev - 2] * kernel_y[0][0] + 
+							 dataCopy[prev + 2] * kernel_y[0][1] + 
+							 dataCopy[prev + 6] * kernel_y[0][2] + 
+							 dataCopy[curr - 2] * kernel_y[1][0] + 
+							 dataCopy[curr + 2] * kernel_y[1][1] +
+							 dataCopy[curr + 6] * kernel_y[1][2] + 
+							 dataCopy[next - 2] * kernel_y[2][0] + 
+							 dataCopy[next + 2] * kernel_y[2][1] + 
+							 dataCopy[next + 6] * kernel_y[2][2];
 
 					var r = Math.sqrt((rx*rx + ry*ry) / 8.0);
 					var g = Math.sqrt((gx*gx + gy*gy) / 8.0);
@@ -140,9 +137,9 @@ Pixastic.Actions.edges = {
 						if (b > 255 ) b = 255;
 					}
 
-					data[offset] = r;
-					data[offset+1] = g;
-					data[offset+2] = b;
+					data[curr] = r;
+					data[curr+1] = g;
+					data[curr+2] = b;
 				} while (--x);
 
 			} while (--y);
