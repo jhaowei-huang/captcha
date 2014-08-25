@@ -144,7 +144,7 @@ Pixastic.Actions.edges = {
 
 			} while (--y);
 
-
+			alert(location.length);
 			return true;
 		}
 	},

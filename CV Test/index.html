@@ -22,6 +22,7 @@
 			<img src="images/input.gif" onmouseover="edges(this);" width = "300" height = "300"></img>
 		</p>
 		</script>
+		<script type="text/javascript" src="edge.js"></script>
 		<script type="text/javascript">
 			$(document).ready(function(){
 				var c, ctx, 
@@ -49,69 +50,14 @@
           			intputImgURL = $("#intputCanvas").getCanvasImage(); // get input image as a DataURL
           			img.src = intputImgURL; // convert DataURL to image object
 
-          			outputImgData = invert(img);
-          			// imgData = effect(img, 1);
-          			// ctx.drawImage(img, 0, 0); // draw on output canvas
+					Detector.detect(img);
 
-          			// canvas = document.createElement('canvas'); // create an in memory canvas
-          			// canvas.width = img.width; canvas.height = img.height; 
-          			// /* important!! but I dont know why the output is not complete without this.
-             //           I guess the canvas is create with a default width and height. The width 
-             //           and height are not fit to the image. */
-          
-          			// context = canvas.getContext('2d');
-          			// // var img = document.getElementById('myimg'); // the image which imageData you want to get.
-          			// context.drawImage(img, 0, 0 );  // draw on in memory canvas
-          			// imgData = context.getImageData(0, 0, img.width, img.height); // get imageData
-
-          			// for(i = 0; i < imgData.data.length; i += 4) { // invert the img
-            	// 		imgData.data[i] = 255 - imgData.data[i];
-			          //   imgData.data[i + 1] = 255 - imgData.data[i + 1];
-			          //   imgData.data[i + 2] = 255 - imgData.data[i + 2];
-			          //   imgData.data[i + 3] = 255;
-          			// }
-          			
-          			ctx.putImageData(outputImgData, 0,0); // draw on outputCanvas
+					alert("after = \n" + Detector.record);
+					ctx.drawImage(img, 0, 0);
+					// ctx.putImageData(outputImgData, 0,0);
 				});
-				
-				function invert(img) {
-					canvas = document.createElement('canvas'); // create an in memory canvas
-	      			canvas.width = img.width; canvas.height = img.height; 
-	          		
-	          		context = canvas.getContext('2d');
-	          		context.drawImage(img, 0, 0 );  // draw on in memory canvas
-	          		imgData = context.getImageData(0, 0, img.width, img.height); // get imageData
-	          		
-	          	// 	for(i = 0; i < imgData.data.length; i += 4) { // invert the img
-	        			// imgData.data[i] = 255 - imgData.data[i];
-			         //    imgData.data[i + 1] = 255 - imgData.data[i + 1];
-				        // imgData.data[i + 2] = 255 - imgData.data[i + 2];
-			         //    imgData.data[i + 3] = 255;
-	          	// 	}
-
-	          		var x, y, i;
-	          		// var dd = {};
-	          		// $.extend(dd,imgData.data);
-	          		var dd = new Object();
-	          		dd = imgData.data;
-	          		for(y = 0; y < imgData.height; y++) {
-	          			for(x = 0; x < imgData.width; x++) {
-	          				i = ((img.width * y) + x) * 4;
-	          				dd[i] = 255 - imgData.data[i];
-			            	dd[i + 1] = 255 - imgData.data[i + 1];
-				        	dd[i + 2] = 255 - imgData.data[i + 2];
-			            	dd[i + 3] = 255;
-			            	// alert(i + " = " + dd[i] + "." + dd[i + 1] + "." + dd[i + 2] + "." + dd[i + 3]);
-	          			}
-	          		}
-	          		// imgData.data = dd;
-					return imgData;
-				}
-
-				
 			});
-		</script>	
-			
+		</script>
 	</head>
 
 	<body>
