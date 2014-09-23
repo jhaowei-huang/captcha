@@ -1,5 +1,5 @@
 var Detector = new function() {
-	this.record = 0;
+	this.record = [];
 
 	this.sayHello = function (str) {
 		if(str == null)
@@ -14,10 +14,10 @@ var Detector = new function() {
 
 	this.detect = function (img) {
 		var mono = true; // !!(params.options.mono && params.options.mono != "false");
-		var invert = true; // !!(params.options.invert && params.options.invert != "false");
+		var invert = false; // !!(params.options.invert && params.options.invert != "false");
 		// var data = prepareImgData(img).data;
 		// var dataCopy = Pixastic.prepareData(params, true);
-		var dataCopy = prepareImgData(img).data;
+		var dataCopy = prepareImgData(img);
 
 		var kernel_x = [
 			[ 1, 0, -1],
@@ -35,6 +35,8 @@ var Detector = new function() {
 
 		var w4 = w * 4;
 		var y = h;
+
+		this.record = [];
 
 		do {
 			var offsetY = (y-1)*w4;
@@ -115,12 +117,12 @@ var Detector = new function() {
 				var g = Math.sqrt((gx*gx + gy*gy) / 8.0);
 				var b = Math.sqrt((bx*bx + by*by) / 8.0);
 
-				if (mono) {
+				if (true /* mono*/) {
 					var brightness = (r*0.3 + g*0.59 + b*0.11) || 0;
-					if (invert) brightness = 255 - brightness;
+					// if (invert) brightness = 255 - brightness;
 					if (brightness < 0 ) brightness = 0;
 					if (brightness > 255 ) brightness = 255;
-					r = g = b = brightness;
+					// r = g = b = brightness;
 					
 					if(brightness == 255) {
 						var loc = {
@@ -128,21 +130,23 @@ var Detector = new function() {
 							y: y
 						};
 
-						this.record += 1;
+						// alert(x + ", " + y);
+						this.record.push(loc);
 					}
-				} else {
-					if (invert) {
-						r = 255 - r;
-						g = 255 - g;
-						b = 255 - b;
-					}
-					if (r < 0 ) r = 0;
-					if (g < 0 ) g = 0;
-					if (b < 0 ) b = 0;
-					if (r > 255 ) r = 255;
-					if (g > 255 ) g = 255;
-					if (b > 255 ) b = 255;
 				}
+				// else {
+				// 	if (invert) {
+				// 		r = 255 - r;
+				// 		g = 255 - g;
+				// 		b = 255 - b;
+				// 	}
+				// 	if (r < 0 ) r = 0;
+				// 	if (g < 0 ) g = 0;
+				// 	if (b < 0 ) b = 0;
+				// 	if (r > 255 ) r = 255;
+				// 	if (g > 255 ) g = 255;
+				// 	if (b > 255 ) b = 255;
+				// }
 
 				// data[curr] = r;
 				// data[curr+1] = g;
@@ -163,5 +167,5 @@ function prepareImgData(img) {
 	context.drawImage(img, 0, 0 );  // draw on in memory canvas
 	var imgData = context.getImageData(0, 0, img.width, img.height); // get imageData
 
-	return imgData;
+	return imgData.data;
 }

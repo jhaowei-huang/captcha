@@ -7,34 +7,74 @@
 		<script src = "Generator.js"></script>
 		<script src = "ImgProcessor.js"></script>
 		<script>
+			
+
 			$(document).ready(function() {
 				var img = new Image();
 				var intputImgURL;
 				var w = document.getElementById("display").width,
 					h = document.getElementById("display").height;
 					
-				img.src= "images/tree01.jpg";
+				img.src= "images/input.gif";
 				img.onload = function() {
 					var x_min = 40, x_max = 300 - x_min, 
 						y_min = 40, y_max = 300 - y_min;
+
 					$("#display").drawImage({
 				  		source: img,
 				  		x: w/2, y: h/2,
 				  		width: w, height: h
-					}).drawLine({
-						strokeStyle: "#FF0000",
-					  	strokeWidth: 3,
-					  	x1: x_min, y1: y_min,
-					  	x2: x_max, y2: y_min,
-					  	x3: x_max, y3: y_max,
-					  	x4: x_min, y4: y_max,
-					  	closed: true
 					});
-					
-      				var process = new ImgProcessor(img);
-					process.edgeDetect();
+					// $("#display").drawLine({
+					// 	strokeStyle: "#FF0000",
+					//   	strokeWidth: 3,
+					//   	x1: x_min, y1: y_min,
+					//   	x2: x_max, y2: y_min,
+					//   	x3: x_max, y3: y_max,
+					//   	x4: x_min, y4: y_max,
+					//   	closed: true
+					// });
+
+					var process = new ImgProcessor();
+					process.edgeDetect(img);
+
 					Generator.shrink(process.record);
-					// alert(process.record.length);
+					Generator.genCharsAndPos();
+
+					var counts = 0;
+					while(counts < 5) {
+						// var str1 = {
+						// 	fillStyle: Generator.genColor(),
+						//   // strokeStyle: '#25a',
+						//   // strokeWidth: 2,
+						//   	x: Generator.captchaArray[1].pos.x, 
+						//   	y: Generator.captchaArray[1].pos.y,
+						//   	fontSize: 45,
+						//   	fontFamily: 'SWTOR Trajan, Italic',
+						//   	text: Generator.captchaArray[counts].symbol
+						// };
+
+						$("#display")
+						.drawText({
+							fillStyle: Generator.genColor(),
+						  // strokeStyle: '#25a',
+						  // strokeWidth: 2,
+						  	x: Generator.captchaArray[counts].pos.x, 
+						  	y: Generator.captchaArray[counts].pos.y,
+						  	fontSize: 45,
+						  	fontFamily: 'SWTOR Trajan, Italic',
+						  	text: Generator.captchaArray[counts].symbol
+						})
+						.drawArc({
+					  		fillStyle: '#000',
+					  		x: Generator.captchaArray[counts].pos.x, 
+					  		y: Generator.captchaArray[counts].pos.y,
+					  		radius: 3
+						});
+
+						counts += 1;
+					}
+					// .drawLine(obj);
 				}
 				
 
@@ -55,7 +95,7 @@
 				// });
 				$("#btn1").click(function(){
 					
-          			
+          			// doRefresh();
 					// $("#p1").toggle();
 					// var str = $("#p1").css("display");
 					// $("#p2").html(str);

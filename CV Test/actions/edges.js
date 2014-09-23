@@ -7,7 +7,7 @@
 Pixastic.Actions.edges = {
 	process : function(params) {
 		var mono = true; // !!(params.options.mono && params.options.mono != "false");
-		var invert = true; // !!(params.options.invert && params.options.invert != "false");
+		var invert = false; // !!(params.options.invert && params.options.invert != "false");
 		var location = [];
 		if (Pixastic.Client.hasCanvasImageData()) {
 			var data = Pixastic.prepareData(params, false);
@@ -119,7 +119,7 @@ Pixastic.Actions.edges = {
 						if (brightness > 255 ) brightness = 255;
 						r = g = b = brightness;
 						
-						if(brightness == 255) {
+						if(brightness >= 200) {
 							var loc = {x: x, y: y};
 							location.push(loc);
 						}

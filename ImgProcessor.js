@@ -1,7 +1,8 @@
-function ImgProcessor(img) {
-	this.img = img;
+function ImgProcessor() {
+	// this.img = img;
 	this.record = [];
-	ImgProcessor.prototype.edgeDetect = function() {
+	
+	this.edgeDetect = function(img) {
 		// Sobel edge detection.
 		var kernel_x = [
 			[ 1, 0, -1],
@@ -19,8 +20,7 @@ function ImgProcessor(img) {
 		    w4 = w * 4,
 		    y  = h;
 
-		var dataCopy = this.prepareImgData();
-
+		var dataCopy = prepareImgData(img);
 		this.record = []; // clear the array
 
 		do {
@@ -100,36 +100,64 @@ function ImgProcessor(img) {
 				var r = Math.sqrt((rx*rx + ry*ry) / 8.0);
 				var g = Math.sqrt((gx*gx + gy*gy) / 8.0);
 				var b = Math.sqrt((bx*bx + by*by) / 8.0);
-				
-				var brightness = (255 - (r*0.299 + g*0.587 + b*0.114)) || 255; // caculate brightness and invert.
-				r = g = b = brightness = this.clampRGB(brightness);
 
-				if(brightness == 255) {
+				var brightness = (r*0.3 + g*0.59 + b*0.11) || 0;
+				brightness = this.clampRGB(brightness);
+				
+				if(brightness >= 200) {
 					var loc = {
 						x: x, 
 						y: y
 					};
+
 					this.record.push(loc);
 				}
+				
+				// var brightness = (r*0.3 + g*0.59 + b*0.11) || 0; // (r*0.299 + g*0.587 + b*0.114) || 0; // caculate brightness and invert.
+				// // r = g = b = brightness = this.clampRGB(brightness);
+				// if (brightness < 0 ) brightness = 0;
+				// if (brightness > 255 ) brightness = 255;
+				// // r = g = b = brightness;
+
+				// if(brightness == 255) {
+				// 	var loc = {
+				// 		x: x, 
+				// 		y: y
+				// 	};
+
+				// 	this.record.push(loc);
+				// }
 			} while(--x);
 		} while(--y);
+		
 	};
 
-	ImgProcessor.prototype.prepareImgData = function() {
-		var canvas = document.createElement('canvas'); // create an in memory canvas
-		canvas.width = this.img.width; canvas.height = this.img.height; 
-		var context = canvas.getContext("2d");
-		context.drawImage(img, 0, 0 );  // draw on in memory canvas
-		var imgData = context.getImageData(0, 0, canvas.width, canvas.height); // get imageData
+	// ImgProcessor.prototype.prepareImgData = function() {
+	// 	var canvas = document.createElement('canvas'); // create an in memory canvas
+	// 	canvas.width = this.img.width; canvas.height = this.img.height; 
+	// 	var context = canvas.getContext("2d");
+	// 	context.drawImage(this.img, 0, 0 );  // draw on in memory canvas
+	// 	var imgData = context.getImageData(0, 0, canvas.width, canvas.height); // get imageData
 
-		return imgData.data;
-	};
+	// 	return imgData.data;
+	// };
 
-	ImgProcessor.prototype.clampRGB = function(value) {
+	this.clampRGB = function(value) {
 		if(value < 0)
 			value = 0;
 		else if(value > 255)
 			value = 255;
 		return value;
 	};
+}
+
+function prepareImgData(img) {
+	// alert("preareImgData");
+	var canvas = document.createElement('canvas'); // create an in memory canvas
+	canvas.width = img.width; canvas.height = img.height; 
+	var context = canvas.getContext("2d");
+	context.drawImage(img, 0, 0 );  // draw on in memory canvas
+	var imgData = context.getImageData(0, 0, img.width, img.height); // get imageData
+
+	return imgData.data;
 }
