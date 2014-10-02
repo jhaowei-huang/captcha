@@ -119,9 +119,17 @@ Pixastic.Actions.edges = {
 						if (brightness > 255 ) brightness = 255;
 						r = g = b = brightness;
 						
-						if(brightness >= 200) {
+						if(brightness >= 50) {
 							var loc = {x: x, y: y};
 							location.push(loc);
+							data[curr] = 255;
+							data[curr+1] = 0;
+							data[curr+2] = 0;
+						}
+						else {
+							data[curr] = r;
+							data[curr+1] = g;
+							data[curr+2] = b;
 						}
 					} else {
 						if (invert) {
@@ -137,9 +145,7 @@ Pixastic.Actions.edges = {
 						if (b > 255 ) b = 255;
 					}
 
-					data[curr] = r;
-					data[curr+1] = g;
-					data[curr+2] = b;
+					
 				} while (--x);
 
 			} while (--y);

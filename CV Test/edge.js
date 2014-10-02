@@ -124,7 +124,7 @@ var Detector = new function() {
 					if (brightness > 255 ) brightness = 255;
 					// r = g = b = brightness;
 					
-					if(brightness == 255) {
+					if(brightness >= 200) {
 						var loc = {
 							x: x, 
 							y: y

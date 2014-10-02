@@ -4,8 +4,8 @@
 		<link rel=stylesheet type="text/css" href="style.css">
 		<script src = "js/jquery/jquery-2.1.1.js"></script>
 		<script src = "js/jcanvas-master/jcanvas.min.js"></script>
-		<script src = "Generator.js"></script>
-		<script src = "ImgProcessor.js"></script>
+		<script src = "Generator.js" async></script>
+		<script src = "ImgProcessor.js" async></script>
 		<script>
 
 			$(document).ready(function() {
@@ -14,7 +14,7 @@
 				var w = document.getElementById("display").width,
 					h = document.getElementById("display").height;
 					
-				img.src= "images/tree01.jpg";
+				img.src= "images/fish.jpg";
 				img.onload = function() {
 					var x_min = 40, x_max = 300 - x_min, 
 						y_min = 40, y_max = 300 - y_min;
@@ -38,51 +38,53 @@
 					process.edgeDetect(img);
 
 					Generator.shrink(process.record);
-					Generator.genCharsAndPos();
+					Generator.genCharsAndPos(function () {
+						var counts = 0;
 
-					var counts = 0;
+						while(counts < 5) {
+							// var str1 = {
+							// 	fillStyle: Generator.genColor(),
+							//   // strokeStyle: '#25a',
+							//   // strokeWidth: 2,
+							//   	x: Generator.captchaArray[1].pos.x, 
+							//   	y: Generator.captchaArray[1].pos.y,
+							//   	fontSize: 45,
+							//   	fontFamily: 'SWTOR Trajan, Italic',
+							//   	text: Generator.captchaArray[counts].symbol
+							// };
+							// alert(counts + " = " + Generator.captchaArray[counts].pos.x+ ", "+ Generator.captchaArray[counts].pos.y);
+							$("#display")
+							.drawText({
+								fillStyle: Generator.genColor(),
+							  // strokeStyle: '#25a',
+							  // strokeWidth: 2,
+								x: Generator.captchaArray[counts].pos.x, 
+								y: Generator.captchaArray[counts].pos.y,
+								fontSize: Generator.captchaArray[counts].fsize,
+								fontFamily: 'SWTOR Trajan, Italic',
+								text: Generator.captchaArray[counts].symbol
+							});
 
-					while(counts < 5) {
-						// var str1 = {
-						// 	fillStyle: Generator.genColor(),
-						//   // strokeStyle: '#25a',
-						//   // strokeWidth: 2,
-						//   	x: Generator.captchaArray[1].pos.x, 
-						//   	y: Generator.captchaArray[1].pos.y,
-						//   	fontSize: 45,
-						//   	fontFamily: 'SWTOR Trajan, Italic',
-						//   	text: Generator.captchaArray[counts].symbol
-						// };
-						alert(counts + " = " + Generator.captchaArray[counts].pos.x+ ", "+ Generator.captchaArray[counts].pos.y);
-						$("#display")
-						.drawText({
-							fillStyle: Generator.genColor(),
-						  // strokeStyle: '#25a',
-						  // strokeWidth: 2,
-						  	x: Generator.captchaArray[counts].pos.x, 
-						  	y: Generator.captchaArray[counts].pos.y,
-						  	fontSize: Generator.captchaArray[counts].fsize,
-						  	fontFamily: 'SWTOR Trajan, Italic',
-						  	text: Generator.captchaArray[counts].symbol
-						});
+							$("#display").drawLine({
+								strokeStyle: "#FF0000",
+								strokeWidth: 3,
+								x1: Generator.captchaArray[counts].pos.x + Generator.captchaArray[counts].fsize / 3, 
+								y1: Generator.captchaArray[counts].pos.y + Generator.captchaArray[counts].fsize / 3,
+								x2: Generator.captchaArray[counts].pos.x - Generator.captchaArray[counts].fsize / 3, 
+								y2: Generator.captchaArray[counts].pos.y - Generator.captchaArray[counts].fsize / 3,
+							});
+							// .drawArc({
+						 //  		fillStyle: '#000',
+						 //  		x: Generator.captchaArray[counts].pos.x, 
+						 //  		y: Generator.captchaArray[counts].pos.y,
+						 //  		radius: 3
+							// });
 
-						$("#display").drawLine({
-							strokeStyle: "#FF0000",
-						  	strokeWidth: 3,
-						  	x1: Generator.captchaArray[counts].pos.x + Generator.captchaArray[counts].fsize / 3, 
-						  	y1: Generator.captchaArray[counts].pos.y + Generator.captchaArray[counts].fsize / 3,
-						  	x2: Generator.captchaArray[counts].pos.x - Generator.captchaArray[counts].fsize / 3, 
-						  	y2: Generator.captchaArray[counts].pos.y - Generator.captchaArray[counts].fsize / 3,
-						});
-						// .drawArc({
-					 //  		fillStyle: '#000',
-					 //  		x: Generator.captchaArray[counts].pos.x, 
-					 //  		y: Generator.captchaArray[counts].pos.y,
-					 //  		radius: 3
-						// });
+							counts += 1;
+						}
+					});
 
-						counts += 1;
-					}
+					
 					// .drawLine(obj);
 				}
 				

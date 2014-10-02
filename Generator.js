@@ -15,18 +15,20 @@ var Generator = new function() {
 	this.records = [];
 	this.captchaArray = [];
 
-	this.genCharsAndPos = function() {
+	this.genCharsAndPos = function(callback) {
 		// var i = Math.random();
 		var counts = 0;
 		var c;
 		var px, py;
-		var length = this.records.length;
+		
+		
 		var index;
 		var fsize;
 		while (counts < 5) {
 			c = String.fromCharCode(0x0041 +  Math.random() * (0x005A - 0x0041 + 1));
 			// px = Math.floor(Math.random() * (this.max - this.min)) + this.min;
 			// py = Math.floor(Math.random() * (this.max - this.min)) + this.min;
+			var length = this.records.length;
 			index = Math.floor(Math.random() * length);
 
 			px = this.records[index].x;
@@ -43,6 +45,7 @@ var Generator = new function() {
 			this.noOverlap(counts);
 			counts += 1;
 		}
+		callback();
 	};
 
 	this.genColor =  function() {
@@ -51,7 +54,7 @@ var Generator = new function() {
 	};
 
 	this.shrink = function(records) {
-		
+		alert(records.length);
 		for(var i = records.length - 1; i >= 0; i--) {
     		if(records[i].x <= this.min || records[i].x >= this.max || 
     		   records[i].y <= this.min || records[i].y >= this.max) {
@@ -75,7 +78,9 @@ var Generator = new function() {
 		for(var i = this.records.length - 1; i >= 0; i--) {
     		if(this.records[i].x >= minx && this.records[i].y >= miny &&  
     		   this.records[i].x <= maxx && this.records[i].y <= maxy) {
+				console.log(this.records[i].x + ", " + this.records[i].y);
 				this.records.splice(i, 1);
+				
 			}
 		}
 	}
