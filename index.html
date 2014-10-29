@@ -73,6 +73,8 @@
 								x2: Generator.captchaArray[counts].pos.x - Generator.captchaArray[counts].fsize / 3, 
 								y2: Generator.captchaArray[counts].pos.y - Generator.captchaArray[counts].fsize / 3,
 							});
+
+							//alert(Generator.captchaArray[0].pos.x + ", "+ Generator.captchaArray[0].pos.y);
 							// .drawArc({
 						 //  		fillStyle: '#000',
 						 //  		x: Generator.captchaArray[counts].pos.x, 
@@ -83,12 +85,22 @@
 							counts += 1;
 						}
 					});
-
 					
+					var str = "";
+					for(var i = 0 ; i < 5 ; i++) {
+						str += Generator.captchaArray[i].symbol;
+					}
+					
+					$("#hint").html("HINT : " + str);
 					// .drawLine(obj);
 				}
-				
+				var canvas = document.getElementById("display");
+				canvas.addEventListener("click", displayOnClick, false);
+				//for(int i = 0; i < 5; i++);
+					//str += Generator.captchaArray[i].symbol;
 
+				
+				
 				// var c = document.getElementById("outputCanvas"); 
 				// to get DOM object. It equals to " document.getElementById("outputCanvas"); ".
 				// var ctx = c.getContext("2d");
@@ -152,32 +164,32 @@
 					
 				});
 			});
+			
+			function displayOnClick(e) {
+				var canvas = document.getElementById("display");
+				var x = e.x - canvas.offsetLeft;
+    			var y = e.y - canvas.offsetTop;
+    			if(Verifier.isMatch(x, y)) {
+    				// alert("right");
+    				$("#ans").html(Verifier.ans);
+    			}
+    			else
+    				$("#ans").html(Verifier.ans);
+				//alert(x + ", " + y);
+			}
 		</script>
 	</head>
 	
-	<body>		
+	<body onLoad=initialize()>		
 		<script type="text/javascript">
-			function rect(cx, cy) {
-				var pts = [
-			    	[cx - 20, cy - 20],
-			    	[cx + 20, cy - 20],
-			    	[cx + 20, cy + 20],
-			    	[cx - 20, cy + 20],
- 					[cx - 20, cy - 20]
-				];
-				return pts;
-			}
-
-// Add the points from the array to the object
-// for (var p=0; p<pts.length; p+=1) {
-//   obj['x'+(p+1)] = pts[p][0];
-//   obj['y'+(p+1)] = pts[p][1];
-// }
+			
 		</script>
 		<p id = "p1"> img-based-CAPTCHA </p>
 		<p id = "p2" style = "display:block"> Info. </p>
 		<button id = "btn1"> Refresh </button>
 		<HR>
 		<canvas id = "display" width="300" height="300"></canvas> 
+		<h id = "hint"> HINT : </h> <BR>
+		<h id = "ans"> your answer : </h>
 	</body>
 </html>

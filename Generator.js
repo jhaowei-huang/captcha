@@ -9,6 +9,28 @@ var captchaClass = (function () {
 	return captchaClass;
 })();
 
+var Verifier = new function() {
+	this.index = 0;
+	this.ans = "";
+
+	this.isMatch = function(x, y) {
+		if(this.index > 4) return true;
+
+		if(x <= Generator.captchaArray[this.index].pos.x + Generator.captchaArray[this.index].fsize / 3 &&
+		   y <= Generator.captchaArray[this.index].pos.y + Generator.captchaArray[this.index].fsize / 3 &&
+		   x >= Generator.captchaArray[this.index].pos.x - Generator.captchaArray[this.index].fsize / 3 &&
+		   y >= Generator.captchaArray[this.index].pos.y - Generator.captchaArray[this.index].fsize / 3) {
+			this.index += 1;
+			this.ans += "O";
+			return true;
+		}
+		else {
+			this.ans += "X";
+			return false;
+		}
+	};
+};
+
 var Generator = new function() {
 	this.max = 260;
 	this.min = 40;
@@ -20,7 +42,6 @@ var Generator = new function() {
 		var counts = 0;
 		var c;
 		var px, py;
-		
 		
 		var index;
 		var fsize;
@@ -54,7 +75,7 @@ var Generator = new function() {
 	};
 
 	this.shrink = function(records) {
-		alert(records.length);
+		// alert(records.length);
 		for(var i = records.length - 1; i >= 0; i--) {
     		if(records[i].x <= this.min || records[i].x >= this.max || 
     		   records[i].y <= this.min || records[i].y >= this.max) {
@@ -69,7 +90,7 @@ var Generator = new function() {
 		if (index >= 4) return;
 		var x = this.captchaArray[index].pos.x;
 		var y = this.captchaArray[index].pos.y;
-		var s = this.captchaArray[index].fsize / 4;
+		var s = this.captchaArray[index].fsize / 2;
 		var minx = x - s;
 		var miny = y - s;
 		var maxx = x + s;
@@ -78,7 +99,7 @@ var Generator = new function() {
 		for(var i = this.records.length - 1; i >= 0; i--) {
     		if(this.records[i].x >= minx && this.records[i].y >= miny &&  
     		   this.records[i].x <= maxx && this.records[i].y <= maxy) {
-				console.log(this.records[i].x + ", " + this.records[i].y);
+				//console.log(this.records[i].x + ", " + this.records[i].y);
 				this.records.splice(i, 1);
 				
 			}

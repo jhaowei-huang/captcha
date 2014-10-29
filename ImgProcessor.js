@@ -104,7 +104,7 @@ function ImgProcessor() {
 				var brightness = (r*0.3 + g*0.59 + b*0.11) || 0;
 				brightness = this.clampRGB(brightness);
 				
-				if(brightness >= 100) {
+				if(brightness >= 1) {
 					var loc = {
 						x: x, 
 						y: y
