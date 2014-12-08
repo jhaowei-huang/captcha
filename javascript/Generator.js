@@ -45,7 +45,7 @@ var Generator = new function() {
 		
 		var index;
 		var fsize;
-		var possible = "ABCDEFGHJKLMNPQRSTUVWXYZabdefghjkmnqrtuy0123456789";
+		var possible = "ABCDEFGHJKLMNPQRSTUVWXYabdefghjkmnqrtuyz0123456789";
 		while (counts < 5) {
 			// c = String.fromCharCode(0x0041 +  Math.random() * (0x005A - 0x0041 + 1));
 			
