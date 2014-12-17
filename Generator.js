@@ -1,9 +1,9 @@
-var captchaClass = (function () {
-
-	captchaClass = function (symbol, pos, fsize) {
+var captchaClass = (function() {
+	captchaClass = function(symbol, pos, fsize, rotate) {
 		this.symbol = symbol;
 		this.pos = pos;
 		this.fsize = fsize;
+		this.rotate = rotate;
 	}
 
 	return captchaClass;
@@ -18,14 +18,18 @@ var Verifier = new function() {
 	this.correct = 0;	
 	this.ans = "";
 
+	this.isCorrect = false;
+	this.isFailed  = false;
+
 	this.isMatch = function(x, y) {
-		if(this.correct > 4) return true;
+		if(this.isCorrect || this.isFailed) return true;
 
 		if(x <= Generator.captchaArray[this.correct].pos.x + Generator.captchaArray[this.correct].fsize / 3 &&
 		   y <= Generator.captchaArray[this.correct].pos.y + Generator.captchaArray[this.correct].fsize / 3 &&
 		   x >= Generator.captchaArray[this.correct].pos.x - Generator.captchaArray[this.correct].fsize / 3 &&
 		   y >= Generator.captchaArray[this.correct].pos.y - Generator.captchaArray[this.correct].fsize / 3) {
 			this.correct += 1;
+			this.isCorrect = (this.correct >= 5) ? (true) : (false);
 			this.term_wrong = 0;
 			this.ans += "O";
 			return true;
@@ -33,6 +37,7 @@ var Verifier = new function() {
 		else {
 			this.term_wrong += 1;
 			this.total_wrong += 1;
+			this.isFailed = (this.total_wrong >= 7 || this.term_wrong  >= 3) ? (true) : (false);
 			this.ans += "X";
 			return false;
 		}
@@ -40,8 +45,8 @@ var Verifier = new function() {
 };
 
 var Generator = new function() {
-	this.max = 260;
-	this.min = 40;
+	this.max = 270;
+	this.min = 30;
 	this.records = [];
 	this.captchaArray = [];
 
@@ -53,17 +58,14 @@ var Generator = new function() {
 		
 		var index;
 		var fsize;
+		var rotate;
 		var possible = "ABCDEFGHJKLMNPQRSTUVWXYZabdefghjkmnqrtuy0123456789";
 		while (counts < 5) {
-			// c = String.fromCharCode(0x0041 +  Math.random() * (0x005A - 0x0041 + 1));
-			
 			// generate none-repeat character
 			var r = Math.random();
 			c = possible.charAt(Math.floor(r * possible.length));
 			possible = possible.replace(c, "");
-			// str.replace(/ba/gi, '');
-			// px = Math.floor(Math.random() * (this.max - this.min)) + this.min;
-			// py = Math.floor(Math.random() * (this.max - this.min)) + this.min;
+			// generate position
 			var length = this.records.length;
 			index = Math.floor(Math.random() * length);
 
@@ -76,15 +78,18 @@ var Generator = new function() {
 			};
 
 			fsize = Math.floor(Math.random() * (90 - 30 + 1)) + 30;
-
-			this.captchaArray.push(new captchaClass(c, loc, fsize));
-			this.noOverlap(counts);
+			rotate = Math.floor(Math.random() * (90 + 1)) - 45;
+			// console.log(rotate);
+			this.captchaArray.push(new captchaClass(c, loc, fsize, rotate));
+			this.noOverlap(counts); // check no overlap
 			counts += 1;
 		}
-		callback();
+		
+		callback(); // draw on canvas.
 	};
 
 	this.genColor =  function() {
+		// random color
 		var newColor = "#" + (0x1000000+(Math.random()) * 0xffffff).toString(16).substr(1,6);
 		return newColor;
 	};
@@ -105,7 +110,7 @@ var Generator = new function() {
 		if (index >= 4) return;
 		var x = this.captchaArray[index].pos.x;
 		var y = this.captchaArray[index].pos.y;
-		var s = this.captchaArray[index].fsize / 2;
+		var s = this.captchaArray[index].fsize;
 		var minx = x - s;
 		var miny = y - s;
 		var maxx = x + s;
@@ -114,9 +119,8 @@ var Generator = new function() {
 		for(var i = this.records.length - 1; i >= 0; i--) {
     		if(this.records[i].x >= minx && this.records[i].y >= miny &&  
     		   this.records[i].x <= maxx && this.records[i].y <= maxy) {
-				//console.log(this.records[i].x + ", " + this.records[i].y);
+				// delete the overlap position
 				this.records.splice(i, 1);
-				
 			}
 		}
 	}
