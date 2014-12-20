@@ -1,5 +1,4 @@
 function ImgProcessor() {
-	// this.img = img;
 	this.record = [];
 	
 	this.edgeDetect = function(img) {
@@ -104,7 +103,7 @@ function ImgProcessor() {
 				var brightness = (r*0.3 + g*0.59 + b*0.11) || 0;
 				brightness = this.clampRGB(brightness);
 				
-				if(brightness >= 1) {
+				if(brightness >= 100) {
 					var loc = {
 						x: x, 
 						y: y
@@ -112,35 +111,10 @@ function ImgProcessor() {
 
 					this.record.push(loc);
 				}
-				
-				// var brightness = (r*0.3 + g*0.59 + b*0.11) || 0; // (r*0.299 + g*0.587 + b*0.114) || 0; // caculate brightness and invert.
-				// // r = g = b = brightness = this.clampRGB(brightness);
-				// if (brightness < 0 ) brightness = 0;
-				// if (brightness > 255 ) brightness = 255;
-				// // r = g = b = brightness;
-
-				// if(brightness == 255) {
-				// 	var loc = {
-				// 		x: x, 
-				// 		y: y
-				// 	};
-
-				// 	this.record.push(loc);
-				// }
 			} while(--x);
 		} while(--y);
 		
 	};
-
-	// ImgProcessor.prototype.prepareImgData = function() {
-	// 	var canvas = document.createElement('canvas'); // create an in memory canvas
-	// 	canvas.width = this.img.width; canvas.height = this.img.height; 
-	// 	var context = canvas.getContext("2d");
-	// 	context.drawImage(this.img, 0, 0 );  // draw on in memory canvas
-	// 	var imgData = context.getImageData(0, 0, canvas.width, canvas.height); // get imageData
-
-	// 	return imgData.data;
-	// };
 
 	this.clampRGB = function(value) {
 		if(value < 0)
@@ -152,7 +126,6 @@ function ImgProcessor() {
 }
 
 function prepareImgData(img) {
-	// alert("preareImgData");
 	var canvas = document.createElement('canvas'); // create an in memory canvas
 	canvas.width = img.width; canvas.height = img.height; 
 	var context = canvas.getContext("2d");

@@ -1,14 +1,6 @@
 <!DOCTYPE html>
 <html>
 	<head>
-<!-- 	<?php
-	$font_family =array("Eater", "Chango", "Concert One", "Cagliostro", "Gentium Basic", "Londrina Sketch", "IM Fell French Canon SC", "Emblema One", "Fredoka One", "Quantico", "Belgrano", "Graduate", "Cantata One", "Shadows Into Light", "Bangers", "Loved by the King", "Spirax", "Swanky and Moo Moo", "Belleza", "Pontano Sans", "Berkshire Swash", "Marko One", "Oleo Script", "Codystar", "Chicle", "Boogaloo", "Crafty Girls", "Bilbo", "Sancreek", "Limelight", "Felipa", "EB Garamond", "Voltaire", "Lovers Quarrel", "Righteous", "Black Ops One", "Mrs Sheppards", "Fredericka the Great", "Port Lligat Sans", "Ceviche One", "Italiana", "Metamorphous", "Krona One", "Alex Brush", "Homenaje", "Unkempt", "Lusitana", "The Girl Next Door", "talianno", "Bowlby One", "Henny Penny", "Antic Didone", "Cabin Condensed", "Spicy Rice", "Averia Sans Libre", "Mr Bedfort", "Merriweather", "Acme", "Podkova", "Nunito", "Dosis", "Karla", "Titan One", "Baumans", "Galdeano", "Jolly Lodger", "Economica", "Vollkorn", "Advent Pro", "Give You Glory", "Condiment", "Ubuntu Mono", "Shojumaru", "Allerta", "Yesteryear", "Bonbon", "Mrs Saint Delafield", "Shadows Into Light Two", "Passion One", "Rosarivo", "Comfortaa", "Sofia", "Magra", "Flamenco", "Rancho", "Great Vibes", "Amatic SC", "Lobster Two", "Nixie One", "Josefin Sans", "Junge", "Asul", "Erica One", "Viga", "Glegoo", "Orbitron", "Happy Monkey", "Rouge Script", "Share", "Stint Ultra Expanded", "Kranky", "Francois One", "Frijole", "Oswald", "Ruge Boogie", "Amethysta", "Herr Von Muellerhoff", "Princess Sofia", "Quicksand", "Londrina Outline", "Cookie", "Dorsa", "Dynalight", "Dawning of a New Day", "Norican", "Annie Use Your Telescope", "Aclonica", "Qwigley", "Diplomata", "Sue Ellen Francisco", "Raleway", "Bigshot One", "Meddon", "Delius Swash Caps", "Caesar Dressing", "Covered By Your Grace", "Ewert", "UnifrakturMaguntia", "Dancing Script", "Monoton", "Miltonian", "Calligraffitti", "Passero One"); 
-
-	for($i = 0; $i < 5 ; $i++) {
-		$family = $font_family[rand(0, count($font_family) - 1)];
-		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"http://fonts.googleapis.com/css?family=$family\" class=\"font_link\">";
-	}		
-?> -->
 		<link rel=stylesheet type="text/css" href="style.css">
 		<script src = "jquery-2.1.1.min.js"></script>
 		<script src = "jcanvas.min.js"></script>
@@ -18,13 +10,35 @@
 			var timerID;
 			var counts = 0;
 			var clicks = 0;
+			var img = new Image();
+			var imgSrc;
+
+			$.ajax({
+				type: "POST",
+				url: "load.php",
+				data: "",
+				success: function(response){
+					// alert(response);
+					imgSrc = "images/" + getImgSrc(response);
+				},
+				error: function(xhr) {
+					alert('Ajax request error');
+				},
+				async: false
+			});
+
+			function getImgSrc(input) {
+				var tmp = input.split("<br />");
+				var len = tmp.length - 2 ;
+				return tmp[Math.floor(Math.random() * len)];
+			}
+
 			$(document).ready(function() {
-				var img = new Image();
 				var intputImgURL;
 				var w = document.getElementById("display").width,
 					h = document.getElementById("display").height;
 					
-				img.src= "fish.jpg";
+				img.src= imgSrc;
 				img.onload = function() {
 					var x_min = 40, x_max = 300 - x_min, 
 						y_min = 40, y_max = 300 - y_min;
@@ -33,11 +47,18 @@
 				  		source: img,
 				  		x: w/2, y: h/2,
 				  		width: w, height: h
+					}).drawRect({
+						layer: true,
+					    draggable: false,
+					    mask: true,
+					    fillStyle: 'rgba(255, 255, 255, 0.1)',
+					    x: w/2, y: h/2,
+					    width: w, height: h
 					});
 
 					var process = new ImgProcessor();
 					process.edgeDetect(img);
-
+					Generator.records = process.record;
 					Generator.shrink(process.record);
 					Generator.genCharsAndPos(function () {
 						var counts = 0;
@@ -94,12 +115,12 @@
 			function tik() {
 				if(Verifier.isFailed) {
 					clearInterval(timerID);
-					alert("failed");
+					alert("failed, " + document.getElementById("timer").innerHTML);
 					return;
 				}
 				else if(Verifier.isCorrect){
 					clearInterval(timerID);
-					alert("pass");
+					alert("pass, " + document.getElementById("timer").innerHTML);
 					return;
 				}
 				document.getElementById("timer").innerHTML = "time : " + (counts++);
@@ -109,7 +130,7 @@
 	
 	<body>		
 		<p id = "p1"> img-based-CAPTCHA </p>
-		<p id = "timer" style = "display:block"> Info. </p>
+		<p id = "timer" style = "display:none"> Info. </p>
 		<button id = "btn1"> Refresh </button>
 		<HR>
 		<h id = "hint"> HINT : </h> <BR>
